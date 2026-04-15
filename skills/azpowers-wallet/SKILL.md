@@ -170,3 +170,116 @@ console.log('Capabilities:', JSON.stringify(summary, null, 2));
 - In A0 Docker: WASM tier active (Tier 2) — keccak256 via pre-built WASM
 - No Rust native addon required
 - For raw cryptographic operations only, see `azpowers-native` skill
+
+---
+
+## A0T Token — Agent Zero Native Token
+
+A0T is the native governance and utility token of Agent Zero, deployed on **Base** (Ethereum L2).
+
+```javascript
+// A0T token constants
+const A0T = {
+  name:     'Agent Zero Token',
+  symbol:   'A0T',
+  contract: '0xCc4ADB618253ED0d4d8A188fB901d70C54735e03',
+  chain:    'base',
+  chainId:  8453,
+  decimals: 18,
+  supply:   1_000_000,
+  dex:      ['Aerodrome', 'Uniswap'],
+  info:     'https://www.agent-zero.ai/p/token/',
+};
+```
+
+### Generate a Base wallet for A0T
+
+```javascript
+import { generateWallet } from 'file://~/.clawpowers/runtime/node_modules/clawpowers/dist/index.js';
+import os from 'os';
+import path from 'path';
+
+// Generate wallet on Base (A0T's network)
+const wallet = await generateWallet({
+  chain: 'base',
+  dataDir: path.join(os.homedir(), '.clawpowers', 'wallet'),
+});
+
+console.log('A0T wallet address:', wallet.address);
+console.log('Network: Base (chainId 8453)');
+console.log('Ready to send/receive A0T at:', wallet.address);
+```
+
+### Sign governance messages with your A0T wallet
+
+```javascript
+import { generateWallet, signMessage } from 'file://~/.clawpowers/runtime/node_modules/clawpowers/dist/index.js';
+import os from 'os';
+import path from 'path';
+
+const wallet = await generateWallet({
+  chain: 'base',
+  dataDir: path.join(os.homedir(), '.clawpowers', 'wallet'),
+});
+
+// Sign a governance vote or identity proof
+const vote = JSON.stringify({ proposal: 'enable-rag-memory', vote: 'yes', timestamp: Date.now() });
+const signed = await signMessage(vote, wallet.keyFile, '');
+
+console.log('Governance vote signed by:', signed.address);
+console.log('Signature:', signed.signature);
+// Submit signed.address + signed.signature to governance contract
+```
+
+### Check A0T balance (requires ethers.js)
+
+```bash
+# Install ethers.js if not present
+npm install ethers --prefix ~/.clawpowers/runtime
+```
+
+```javascript
+import { ethers } from 'file://~/.clawpowers/runtime/node_modules/ethers/dist/ethers.min.mjs';
+
+const A0T_CONTRACT = '0xCc4ADB618253ED0d4d8A188fB901d70C54735e03';
+const BASE_RPC     = 'https://mainnet.base.org';
+const ERC20_ABI    = [
+  'function balanceOf(address) view returns (uint256)',
+  'function decimals() view returns (uint8)',
+  'function symbol() view returns (string)',
+];
+
+const provider = new ethers.JsonRpcProvider(BASE_RPC);
+const token    = new ethers.Contract(A0T_CONTRACT, ERC20_ABI, provider);
+
+async function getA0TBalance(address) {
+  const [raw, decimals, symbol] = await Promise.all([
+    token.balanceOf(address),
+    token.decimals(),
+    token.symbol(),
+  ]);
+  const balance = ethers.formatUnits(raw, decimals);
+  console.log(`Balance: ${balance} ${symbol}`);
+  return balance;
+}
+
+// Example: check balance of any address
+await getA0TBalance('0xYourWalletAddressHere');
+```
+
+### A0T Token Use Cases for Agents
+
+| Use Case | Description |
+|---|---|
+| **Governance voting** | Sign proposals with wallet key, submit to governance contract |
+| **Venice AI access** | A0T holders get free private AI API key |
+| **Staking / locking** | Lock A0T for enhanced governance weight |
+| **Agent identity** | Use wallet address as verifiable agent identity on Base |
+| **x402 payments** | Combine with `azpowers-payments` for A0T-denominated service payments |
+
+### Resources
+
+- Token info: https://www.agent-zero.ai/p/token/
+- BaseScan: https://basescan.org/token/0xCc4ADB618253ED0d4d8A188fB901d70C54735e03
+- Uniswap: https://app.uniswap.org/swap?chain=base&outputCurrency=0xCc4ADB618253ED0d4d8A188fB901d70C54735e03
+- Aerodrome: https://aerodrome.finance
