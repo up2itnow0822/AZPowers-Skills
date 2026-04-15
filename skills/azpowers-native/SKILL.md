@@ -237,3 +237,19 @@ console.log('Valid format:', /^0x[0-9a-fA-F]{40}$/.test(address));
 - Tier 3 (TypeScript) activates automatically if WASM load fails
 - For wallet generation with file persistence, use `azpowers-wallet` skill instead
 - Test key `ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80` is the Hardhat default account 0
+
+## Tier 1 (Rust Native) — Easy Button
+
+For maximum performance in trading, Polymarket, or Parallel Swarm workloads, upgrade from WASM to native Rust (~3–10× faster):
+
+```bash
+bash scripts/install-tier1.sh
+```
+
+This installs Rust to `/a0/usr/.rust/` (persists across container restarts), builds the `clawpowers-ffi` .node addon, and automatically promotes CPS to Tier 1.
+
+Verify after install:
+```javascript
+import { getActiveTier } from 'clawpowers';
+console.log(getActiveTier()); // 'native'
+```

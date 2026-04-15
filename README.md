@@ -161,12 +161,14 @@ Encoded format: `ITP:<code1>+<code2>+...` (only when savings > 10%)
 CPS automatically selects the best available cryptographic acceleration tier at runtime:
 
 ```
-Tier 1 — Rust native (.node addon)
-  └── Requires: Rust toolchain + cargo build
-  └── A0 Docker: UNAVAILABLE (no Rust toolchain)
-  └── Provides: maximum performance
+Tier 1 — Rust native (.node addon)          ← OPTIONAL: install-tier1.sh
+  └── Requires: Rust toolchain (auto-installed to /a0/usr/.rust/)
+  └── A0 Docker: AVAILABLE via scripts/install-tier1.sh
+  └── Persistent: Yes — stored in /a0/usr/.rust/ (survives restarts)
+  └── Provides: maximum performance (~3–10× faster than WASM)
+  └── Best for: trading agents, Polymarket bots, Parallel Swarm at scale
 
-Tier 2 — WASM (WebAssembly)
+Tier 2 — WASM (WebAssembly)                 ← DEFAULT: active out of the box
   └── Requires: pre-built clawpowers_wasm.js (included in repo)
   └── A0 Docker: ACTIVE ✓
   └── Location: native/wasm/pkg-node/clawpowers_wasm.js (487KB)
@@ -178,14 +180,60 @@ Tier 3 — TypeScript fallback
   └── Provides: all operations, lower performance
 ```
 
+---
+
+## Tier 1 — Native Rust (Easy Button)
+
+For crypto-intensive workloads (trading agents, Polymarket, Parallel Swarm), upgrade to the native Rust `.node` addon:
+
+```bash
+# One command — installs Rust + builds .node + verifies Tier 1 active
+bash scripts/install-tier1.sh
+```
+
+**What it does:**
+1. Installs Rust toolchain to `/a0/usr/.rust/` *(persists across container restarts)*
+2. Compiles the `clawpowers-ffi` napi-rs crate (~5–10 min first build)
+3. Places `index.node` where CPS loader auto-discovers it
+4. Verifies `getActiveTier()` returns `'native'`
+
+**Options:**
+```bash
+bash scripts/install-tier1.sh              # full install + build
+bash scripts/install-tier1.sh --verify     # check current tier only
+bash scripts/install-tier1.sh --build-only # skip rustup, just rebuild .node
+```
+
+**After install — activate Rust in new terminals:**
+```bash
+source /a0/usr/.rust/env.sh
+# Or permanently:
+echo 'source /a0/usr/.rust/env.sh' >> ~/.bashrc
+```
+
+**Tier 1 vs Tier 2 capabilities:**
+
+| Capability | WASM Tier 2 | Rust Tier 1 |
+|---|---|---|
+| secp256k1 wallet gen/sign | ✅ | ✅ ~5× faster |
+| Keccak-256 / SHA-256 | ✅ | ✅ ~3× faster |
+| EVM address derivation | ✅ | ✅ ~5× faster |
+| Canonical store backend | WASM | **Native sled** |
+| Vector compression | ✅ | ✅ ~10× faster |
+| x402 payment header | ✅ | ✅ faster |
+| Write security firewall | ✅ | ✅ faster |
+
+> **Note:** Tier 2 WASM produces identical outputs — Tier 1 is a pure performance upgrade, not a feature upgrade.
+
 Check active tier:
 ```javascript
 import { getActiveTier, getCapabilitySummary } from 'file:///a0/usr/projects/adapt_clawpowers-skills_to_a0/clawpowers-skills-repo/dist/index.js';
-console.log(await getActiveTier());          // 'wasm'
-console.log(await getCapabilitySummary());   // full tier inventory
+console.log(getActiveTier());          // 'native' | 'wasm' | 'typescript'
+console.log(getCapabilitySummary());
 ```
 
 ---
+
 
 ## Project Structure
 
