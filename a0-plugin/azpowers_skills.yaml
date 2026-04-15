@@ -1,0 +1,17 @@
+name: azpowers-skills
+version: 1.0.0
+description: AZPowers-Skills v2.2.6 capability layer for Agent Zero
+enabled: true
+prompt: |
+  ## AZPowers-Skills Capabilities
+  You have access to AZPowers-Skills v2.2.6 capabilities via the skills system.
+  Use `skills_tool:load` with these skill names:
+  - `azpowers-memory` — 3-tier persistent memory (Working/Episodic/Procedural + Checkpoints + ContextInjector)
+  - `azpowers-payments` — x402 HTTP payment handling, spending limits, PaymentExecutor
+  - `azpowers-wallet` — Ethereum wallet generation/import/signing (WASM-accelerated)
+  - `azpowers-rsi` — Self-improvement: metrics, hypotheses, A/B tests, mutation engine, audit log
+  - `azpowers-swarm` — Parallel task coordination: complexity classification, concurrency, token budgets
+  - `azpowers-itp` — Agent message compression (saves tokens via ITP protocol)
+  - `azpowers-native` — Crypto primitives: SHA-256, Keccak-256, ECDSA, EVM address derivation
+  CPS Runtime: ~/.clawpowers/ | Active tier: WASM (Tier 2) | ITP service: port 8100
+  To start ITP service: bash /a0/usr/projects/adapt_azpowers-skills_to_a0/itp-service/start.sh

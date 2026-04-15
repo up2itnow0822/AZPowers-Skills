@@ -1,0 +1,31 @@
+# Upstream CPS source (separate repo)
+clawpowers-skills-repo/
+
+# Agent Zero project metadata
+.a0proj/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+.npm/
+
+# Environment / secrets
+*.env
+.env*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
