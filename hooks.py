@@ -1,5 +1,6 @@
 """AZPowers-Skills Agent Zero plugin lifecycle hooks."""
 import os
+import sys
 import shutil
 import subprocess
 from pathlib import Path
@@ -51,7 +52,7 @@ def install(plugin_dir: str, data_dir: str) -> None:
     if itp_req.is_file():
         try:
             subprocess.run(
-                ["pip", "install", "-q", "-r", str(itp_req)],
+                [sys.executable, "-m", "pip", "install", "-q", "-r", str(itp_req)],
                 check=True,
             )
             print("[AZPowers] ITP service Python dependencies installed")
