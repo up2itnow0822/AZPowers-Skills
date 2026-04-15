@@ -1,6 +1,13 @@
 # AZPowers-Skills × Agent Zero
 
-Adapter layer integrating [AZPowers-Skills](https://github.com/clawpowers/clawpowers-skills) v2.2.6 into [Agent Zero](https://github.com/frdel/agent-zero) as loadable skills and a system-prompt plugin.
+[![CI](https://github.com/up2itnow0822/AZPowers-Skills/actions/workflows/ci.yml/badge.svg)](https://github.com/up2itnow0822/AZPowers-Skills/actions/workflows/ci.yml)
+[![Security](https://github.com/up2itnow0822/AZPowers-Skills/actions/workflows/security.yml/badge.svg)](https://github.com/up2itnow0822/AZPowers-Skills/actions/workflows/security.yml)
+[![CodeQL](https://github.com/up2itnow0822/AZPowers-Skills/actions/workflows/codeql.yml/badge.svg)](https://github.com/up2itnow0822/AZPowers-Skills/actions/workflows/codeql.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![A0P-S v1.0.0](https://img.shields.io/badge/A0P--S-v1.0.0-blue)](plugin.yaml)
+[![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-green)](https://nodejs.org)
+
+Adapter layer integrating [ClawPowers-Skills](https://github.com/up2itnow0822/ClawPowers-Skills) v2.2.6 (A0P-S) into [Agent Zero](https://github.com/frdel/agent-zero) as loadable skills and a system-prompt plugin.
 
 ---
 

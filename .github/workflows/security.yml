@@ -1,0 +1,80 @@
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly scan every Monday at 07:00 UTC
+    - cron: '0 7 * * 1'
+
+jobs:
+  # ── Job 1: Secret scanning with Gitleaks ─────────────────────────────────────
+  secret-scan:
+    name: Secret Scan (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Job 2: Python security audit with Bandit ─────────────────────────────────
+  bandit:
+    name: Python Security (Bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Bandit
+        run: pip install bandit[toml]
+
+      - name: Bandit scan — hooks.py
+        run: bandit hooks.py -ll -ii
+
+      - name: Bandit scan — itp_server.py
+        run: bandit itp-service/itp_server.py -ll -ii
+
+      - name: Bandit scan — extension
+        run: bandit extensions/python/agent_system_prompt/end/10_azpowers.py -ll -ii
+
+  # ── Job 3: Dependency audit ───────────────────────────────────────────────────
+  dep-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Python dependency audit (pip-audit)
+        run: |
+          pip install pip-audit
+          pip-audit -r itp-service/requirements.txt --skip-editable || true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: npm audit on clawpowers@2.2.6
+        run: |
+          mkdir -p /tmp/npm-audit
+          cd /tmp/npm-audit
+          npm init -y --quiet
+          npm install clawpowers@2.2.6 --no-save
+          npm audit --audit-level=high --omit=dev || true
+          echo 'npm audit complete'
