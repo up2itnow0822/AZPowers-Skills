@@ -4,11 +4,22 @@
  * Tests all 7 CPS modules. Exit 0 = all pass. Exit 1 = any fail.
  */
 
-const CPS = 'file:///a0/usr/projects/adapt_clawpowers-skills_to_a0/clawpowers-skills-repo/dist/index.js';
 import os from 'os';
 import path from 'path';
+import { existsSync } from 'fs';
 
+// Resolve CPS module: prefer npm-installed at ~/.clawpowers/runtime, fall back to local dev dist
 const HOME = path.join(os.homedir(), '.clawpowers');
+const NPM_CPS   = path.join(HOME, 'runtime', 'node_modules', 'clawpowers', 'dist', 'index.js');
+const LOCAL_CPS = new URL('../clawpowers-skills-repo/dist/index.js', import.meta.url).pathname;
+const CPS_PATH  = existsSync(NPM_CPS) ? NPM_CPS : existsSync(LOCAL_CPS) ? LOCAL_CPS : null;
+if (!CPS_PATH) {
+  console.error('ERROR: clawpowers dist not found. Run scripts/install.sh first (npm install clawpowers@2.2.6).');
+  process.exit(1);
+}
+const CPS = `file://${CPS_PATH}`;
+console.log(`CPS source: ${CPS_PATH}`);
+
 
 let allPass = true;
 const results = [];

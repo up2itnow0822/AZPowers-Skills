@@ -190,25 +190,29 @@ console.log(await getCapabilitySummary());   // full tier inventory
 ## Project Structure
 
 ```
-/a0/usr/projects/adapt_clawpowers-skills_to_a0/
-├── PLAN.md                          — Implementation plan
-├── README.md                        — This file
-├── itp-service/                     — ITP FastAPI compression service
-│   ├── itp_server.py                — FastAPI app (port 8100)
+AZPowers-Skills/                         <- GitHub repo root = plugin root
+├── plugin.yaml                          — Plugin manifest (A0 Plugin Index)
+├── LICENSE                              — MIT license
+├── README.md                            — This file
+├── hooks.py                             — Plugin install/uninstall lifecycle
+├── extensions/
+│   └── python/agent_system_prompt/end/
+│       └── 10_azpowers.py               — Injects capabilities into agent context
+├── skills/                              — Canonical SKILL.md files
+│   └── azpowers-{module}/SKILL.md       — 7 skill modules
+├── itp-service/                         — ITP FastAPI compression service
+│   ├── itp_server.py                    — FastAPI app (port 8100)
 │   ├── requirements.txt
 │   └── start.sh
-├── a0-skills/                       — Canonical SKILL.md files
-│   └── clawpowers-{module}/SKILL.md
-├── a0-plugin/                       — A0 plugin YAML
-│   └── azpowers_skills.yaml
 └── scripts/
-    ├── install.sh                   — Build CPS + setup runtime dirs
-    ├── smoke-test.mjs               — Node.js test all 7 modules
-    └── verify.sh                    — Full verification script
+    ├── install.sh                       — Install clawpowers npm package + runtime dirs
+    ├── smoke-test.mjs                   — Node.js test all 7 modules
+    └── verify.sh                        — Full verification script
 
 # Deployed to Agent Zero:
-/a0/usr/skills/clawpowers-{module}/SKILL.md    — Loadable by skills_tool
-/a0/usr/plugins/azpowers_skills.yaml          — Auto-injected into prompts
+/a0/usr/skills/azpowers-{module}/SKILL.md         — Loadable by skills_tool
+/a0/usr/plugins/azpowers_skills/plugin.yaml       — Plugin manifest
+/a0/usr/plugins/azpowers_skills/extensions/       — System prompt injection
 ```
 
 ---

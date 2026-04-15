@@ -7,6 +7,10 @@ PASS=0
 FAIL=0
 WARN=0
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PLUGIN_SRC="$(cd "$SCRIPT_DIR/.." && pwd)"
+CLP_RUNTIME="$HOME/.clawpowers/runtime"
+
 green()  { echo -e "\033[0;32m  PASS\033[0m $1"; ((PASS++)); }
 red()    { echo -e "\033[0;31m  FAIL\033[0m $1"; ((FAIL++)); }
 yellow() { echo -e "\033[0;33m  WARN\033[0m $1"; ((WARN++)); }
@@ -25,27 +29,34 @@ else
   green "Node.js v${NODE_VER} (≥20 required)"
 fi
 
-# ── 2. dist/index.js exists ──────────────────────────────────────────────────
-DIST=/a0/usr/projects/adapt_clawpowers-skills_to_a0/clawpowers-skills-repo/dist/index.js
-if [ -f "$DIST" ]; then
-  SIZE=$(du -k "$DIST" | cut -f1)
-  green "dist/index.js exists (${SIZE}KB)"
+# ── 2. clawpowers npm dist ────────────────────────────────────────────────────
+NPM_DIST="$CLP_RUNTIME/node_modules/clawpowers/dist/index.js"
+LOCAL_DIST="$PLUGIN_SRC/clawpowers-skills-repo/dist/index.js"
+if [ -f "$NPM_DIST" ]; then
+  SIZE=$(du -k "$NPM_DIST" | cut -f1)
+  green "clawpowers dist (npm): $NPM_DIST (${SIZE}KB)"
+elif [ -f "$LOCAL_DIST" ]; then
+  SIZE=$(du -k "$LOCAL_DIST" | cut -f1)
+  yellow "clawpowers dist (local dev): $LOCAL_DIST (${SIZE}KB) — run install.sh for npm install"
 else
-  red "dist/index.js NOT FOUND — run install.sh first"
+  red "clawpowers dist NOT FOUND — run scripts/install.sh"
 fi
 
-# ── 3. WASM file exists ──────────────────────────────────────────────────────
-WASM=/a0/usr/projects/adapt_clawpowers-skills_to_a0/clawpowers-skills-repo/native/wasm/pkg-node/clawpowers_wasm.js
-if [ -f "$WASM" ]; then
-  green "WASM pre-built: pkg-node/clawpowers_wasm.js exists"
+# ── 3. WASM file ─────────────────────────────────────────────────────────────
+NPM_WASM="$CLP_RUNTIME/node_modules/clawpowers/native/wasm/pkg-node/clawpowers_wasm.js"
+LOCAL_WASM="$PLUGIN_SRC/clawpowers-skills-repo/native/wasm/pkg-node/clawpowers_wasm.js"
+if [ -f "$NPM_WASM" ]; then
+  green "WASM (npm): clawpowers_wasm.js exists"
+elif [ -f "$LOCAL_WASM" ]; then
+  yellow "WASM (local dev): clawpowers_wasm.js exists — run install.sh for npm install"
 else
-  red "WASM file NOT FOUND: $WASM"
+  red "WASM file NOT FOUND"
 fi
 
 # ── 4. Run smoke test ────────────────────────────────────────────────────────
 echo ''
 echo 'Running smoke-test.mjs...'
-if node /a0/usr/projects/adapt_clawpowers-skills_to_a0/scripts/smoke-test.mjs; then
+if node "$SCRIPT_DIR/smoke-test.mjs"; then
   green "smoke-test.mjs: all 7 modules passed"
 else
   red "smoke-test.mjs: one or more modules failed"
@@ -63,7 +74,7 @@ fi
 
 # ── 6. Skills in /a0/usr/skills/ ─────────────────────────────────────────────
 echo ''
-echo 'ClawPowers skills in /a0/usr/skills/:'
+echo 'AZPowers skills in /a0/usr/skills/:'
 SKILL_COUNT=0
 for skill in azpowers-memory azpowers-payments azpowers-wallet azpowers-rsi azpowers-swarm azpowers-itp azpowers-native; do
   SKILL_FILE="/a0/usr/skills/$skill/SKILL.md"
@@ -81,12 +92,26 @@ else
   red "Only ${SKILL_COUNT}/7 skills found in /a0/usr/skills/"
 fi
 
-# ── 7. Plugin check ───────────────────────────────────────────────────────────
-PLUGIN_FILE=/a0/usr/plugins/azpowers_skills.yaml
-if [ -f "$PLUGIN_FILE" ]; then
-  green "Plugin present: /a0/usr/plugins/azpowers_skills.yaml"
+# ── 7. Plugin directory check ────────────────────────────────────────────────
+PLUGIN_DIR=/a0/usr/plugins/azpowers_skills
+PLUGIN_YAML="$PLUGIN_DIR/plugin.yaml"
+if [ -f "$PLUGIN_YAML" ]; then
+  green "Plugin directory present: $PLUGIN_YAML"
 else
-  red "Plugin NOT FOUND: $PLUGIN_FILE"
+  red "Plugin NOT FOUND: $PLUGIN_YAML"
+fi
+
+# Check for stale flat plugin file
+if [ -f /a0/usr/plugins/azpowers_skills.yaml ]; then
+  yellow "Stale flat plugin file found: /a0/usr/plugins/azpowers_skills.yaml — remove it"
+fi
+
+# ── 8. Extension check ───────────────────────────────────────────────────────
+EXT_FILE="$PLUGIN_DIR/extensions/python/agent_system_prompt/end/10_azpowers.py"
+if [ -f "$EXT_FILE" ]; then
+  green "Extension present: extensions/python/agent_system_prompt/end/10_azpowers.py"
+else
+  red "Extension NOT FOUND: $EXT_FILE"
 fi
 
 # ── Summary ──────────────────────────────────────────────────────────────────
