@@ -1,7 +1,7 @@
 #!/bin/bash
 # Start ITP (Identical Twins Protocol) compression service
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR"
+cd "$SCRIPT_DIR" || exit 1
 
 # Check if already running
 if curl -sf http://localhost:8100/health > /dev/null 2>&1; then
@@ -14,7 +14,7 @@ nohup python itp_server.py > /tmp/itp-service.log 2>&1 &
 echo $! > /tmp/itp-service.pid
 
 # Wait for startup
-for i in $(seq 1 10); do
+for _ in $(seq 1 10); do
     if curl -sf http://localhost:8100/health > /dev/null 2>&1; then
         echo "ITP service started (PID: $(cat /tmp/itp-service.pid))"
         exit 0

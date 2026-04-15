@@ -1,5 +1,4 @@
 """AZPowers-Skills Agent Zero plugin lifecycle hooks."""
-import os
 import sys
 import shutil
 import subprocess

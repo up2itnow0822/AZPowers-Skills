@@ -140,7 +140,7 @@ else
     error "Build output not found — expected one of:"
     error "  $FFI_SO"
     error "  $NAPI_NODE"
-    ls "$A0PS_REPO/native/target/release/" | grep -E '\.so|\.node' | head -10 || true
+    find "$A0PS_REPO/native/target/release/" -maxdepth 1 \( -name '*.so' -o -name '*.node' \) 2>/dev/null | head -10 || true
     exit 1
   fi
 fi

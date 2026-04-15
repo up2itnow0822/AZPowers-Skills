@@ -8,7 +8,6 @@ from pydantic import BaseModel
 from typing import Optional
 from collections import deque
 import time
-import re
 
 app = FastAPI(title="ITP Service", version="1.0.0")
 
@@ -271,4 +270,4 @@ async def history(limit: int = 20):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8100)
+    uvicorn.run(app, host="127.0.0.1", port=8100)
