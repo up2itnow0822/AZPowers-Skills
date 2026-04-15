@@ -158,7 +158,7 @@ Encoded format: `ITP:<code1>+<code2>+...` (only when savings > 10%)
 
 ## Tier Architecture
 
-CPS automatically selects the best available cryptographic acceleration tier at runtime:
+A0P-S automatically selects the best available cryptographic acceleration tier at runtime:
 
 ```
 Tier 1 — Rust native (.node addon)          ← OPTIONAL: install-tier1.sh
