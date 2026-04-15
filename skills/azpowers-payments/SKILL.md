@@ -12,7 +12,7 @@ requires:
 Detect HTTP 402 Payment Required responses, enforce spending policy, and execute payments for agent-to-agent services.
 
 ```javascript
-const CPS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
+const A0PS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
 ```
 
 ---
@@ -165,4 +165,4 @@ console.log('Payments made:', auditLog.length);
 ## Notes
 - `SpendingPolicy.check()` never auto-pays — use `PaymentExecutor.execute()` for actual payments
 - All payments are logged to audit log via `executor.getAuditLog()`
-- Never auto-retry failed payments (CPS design rule)
+- Never auto-retry failed payments (A0P-S design rule)

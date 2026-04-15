@@ -17,7 +17,7 @@ SHA-256, Keccak-256 (Ethereum), secp256k1 ECDSA signing/verification, EVM addres
 - **Tier 3 (TypeScript):** Always available fallback
 
 ```javascript
-const CPS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
+const A0PS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
 ```
 
 ---
@@ -246,7 +246,7 @@ For maximum performance in trading, Polymarket, or Parallel Swarm workloads, upg
 bash scripts/install-tier1.sh
 ```
 
-This installs Rust to `/a0/usr/.rust/` (persists across container restarts), builds the `clawpowers-ffi` .node addon, and automatically promotes CPS to Tier 1.
+This installs Rust to `/a0/usr/.rust/` (persists across container restarts), builds the `clawpowers-ffi` .node addon, and automatically promotes A0P-S to Tier 1.
 
 Verify after install:
 ```javascript

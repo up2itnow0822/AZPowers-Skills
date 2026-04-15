@@ -9,12 +9,12 @@ requires:
 
 # ClawPowers Memory — 3-Tier Persistent Memory System
 
-Provides Working Memory, Episodic Memory, Procedural Memory, Checkpoints, and Context Injection via CPS v2.2.6.
+Provides Working Memory, Episodic Memory, Procedural Memory, Checkpoints, and Context Injection via A0P-S v2.2.6.
 
-Runtime home: `~/.clawpowers/` (auto-created by CPS)
+Runtime home: `~/.clawpowers/` (auto-created by A0P-S)
 
 ```javascript
-const CPS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
+const A0PS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
 ```
 
 ---

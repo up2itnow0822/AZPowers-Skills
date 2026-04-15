@@ -12,7 +12,7 @@ requires:
 Track performance metrics, generate improvement hypotheses, run A/B tests, and audit all RSI decisions.
 
 ```javascript
-const CPS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
+const A0PS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
 ```
 
 ---

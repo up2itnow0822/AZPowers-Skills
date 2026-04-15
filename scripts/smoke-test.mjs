@@ -1,24 +1,24 @@
 #!/usr/bin/env node
 /**
  * AZPowers-Skills × Agent Zero — Smoke Test
- * Tests all 7 CPS modules. Exit 0 = all pass. Exit 1 = any fail.
+ * Tests all 7 A0P-S modules. Exit 0 = all pass. Exit 1 = any fail.
  */
 
 import os from 'os';
 import path from 'path';
 import { existsSync } from 'fs';
 
-// Resolve CPS module: prefer npm-installed at ~/.clawpowers/runtime, fall back to local dev dist
+// Resolve A0P-S module: prefer npm-installed at ~/.clawpowers/runtime, fall back to local dev dist
 const HOME = path.join(os.homedir(), '.clawpowers');
 const NPM_CPS   = path.join(HOME, 'runtime', 'node_modules', 'clawpowers', 'dist', 'index.js');
 const LOCAL_CPS = new URL('../clawpowers-skills-repo/dist/index.js', import.meta.url).pathname;
-const CPS_PATH  = existsSync(NPM_CPS) ? NPM_CPS : existsSync(LOCAL_CPS) ? LOCAL_CPS : null;
-if (!CPS_PATH) {
+const A0PS_PATH  = existsSync(NPM_CPS) ? NPM_CPS : existsSync(LOCAL_CPS) ? LOCAL_CPS : null;
+if (!A0PS_PATH) {
   console.error('ERROR: clawpowers dist not found. Run scripts/install.sh first (npm install clawpowers@2.2.6).');
   process.exit(1);
 }
-const CPS = `file://${CPS_PATH}`;
-console.log(`CPS source: ${CPS_PATH}`);
+const A0PS = `file://${A0PS_PATH}`;
+console.log(`A0P-S source: ${A0PS_PATH}`);
 
 
 let allPass = true;
@@ -41,7 +41,7 @@ console.log('=== AZPowers-Skills Smoke Test ===\n');
 // ─── 1. Memory ────────────────────────────────────────────────────────────────
 console.log('[1/7] Memory');
 try {
-  const { WorkingMemoryManager } = await import(CPS);
+  const { WorkingMemoryManager } = await import(A0PS);
   const mgr = new WorkingMemoryManager();
   const goal = {
     taskId: 'smoke-test-001',
@@ -64,7 +64,7 @@ try {
 // ─── 2. Wallet ───────────────────────────────────────────────────────────────
 console.log('[2/7] Wallet');
 try {
-  const { generateWallet } = await import(CPS);
+  const { generateWallet } = await import(A0PS);
   const wallet = await generateWallet({
     chain: 'base',
     dataDir: path.join(HOME, 'wallet'),
@@ -79,7 +79,7 @@ try {
 // ─── 3. Payments ─────────────────────────────────────────────────────────────
 console.log('[3/7] Payments');
 try {
-  const { detect402 } = await import(CPS);
+  const { detect402 } = await import(A0PS);
   // Mock 402 response with all required headers
   const mock402 = {
     status: 402,
@@ -104,7 +104,7 @@ try {
 // ─── 4. RSI ──────────────────────────────────────────────────────────────────
 console.log('[4/7] RSI');
 try {
-  const { MetricsCollector } = await import(CPS);
+  const { MetricsCollector } = await import(A0PS);
   const metricsDir = path.join(HOME, 'metrics');
   const metrics = new MetricsCollector(
     path.join(metricsDir, 'smoke-tasks.json'),
@@ -143,7 +143,7 @@ try {
 // ─── 5. Swarm ─────────────────────────────────────────────────────────────────
 console.log('[5/7] Swarm');
 try {
-  const { classifyHeuristic, selectModel } = await import(CPS);
+  const { classifyHeuristic, selectModel } = await import(A0PS);
   const simple = classifyHeuristic('List files');
   const complex = classifyHeuristic('Redesign the entire authentication and authorization system with multi-tenant support, OAuth2, and audit logging');
   if (simple !== 'simple' && simple !== 'medium') throw new Error(`Unexpected simple classification: ${simple}`);
@@ -158,7 +158,7 @@ try {
 // ─── 6. Native ────────────────────────────────────────────────────────────────
 console.log('[6/7] Native');
 try {
-  const { getActiveTier, computeSha256, isWasmAvailable } = await import(CPS);
+  const { getActiveTier, computeSha256, isWasmAvailable } = await import(A0PS);
   const tier = await getActiveTier();
   if (!['native', 'wasm', 'ts'].includes(tier)) throw new Error(`Unknown tier: ${tier}`);
   const wasmOk = await isWasmAvailable();
@@ -172,7 +172,7 @@ try {
 // ─── 7. ITP ──────────────────────────────────────────────────────────────────
 console.log('[7/7] ITP');
 try {
-  const { itpEncode, itpHealthCheck } = await import(CPS);
+  const { itpEncode, itpHealthCheck } = await import(A0PS);
   // itpHealthCheck — optional, service may not be running
   const isUp = await itpHealthCheck();
   console.log(`        ITP service available: ${isUp}`);

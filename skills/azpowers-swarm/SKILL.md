@@ -12,7 +12,7 @@ requires:
 Classify task complexity, select models, manage concurrency limits, and track token budgets across parallel agent workloads.
 
 ```javascript
-const CPS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
+const A0PS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
 ```
 
 ---

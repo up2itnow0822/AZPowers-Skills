@@ -16,7 +16,7 @@ Generate, import, and manage Ethereum wallets with WASM-accelerated cryptography
 **WalletConfig:** `{ chain: 'base' | 'ethereum' | 'polygon', dataDir: string }`
 
 ```javascript
-const CPS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
+const A0PS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
 ```
 
 ---

@@ -6,7 +6,7 @@ Adapter layer integrating [AZPowers-Skills](https://github.com/clawpowers/clawpo
 
 ## What is AZPowers-Skills?
 
-AZPowers-Skills (CPS) is a TypeScript/Node.js library of agent capability modules:
+AZPowers-Skills (A0P-S) is a TypeScript/Node.js library of agent capability modules:
 
 - **3-tier persistent memory** — Working, Episodic, Procedural memory with checkpoints
 - **x402 payment handling** — HTTP 402 detection, spending limits, payment execution
@@ -16,14 +16,14 @@ AZPowers-Skills (CPS) is a TypeScript/Node.js library of agent capability module
 - **ITP message compression** — Save tokens on inter-agent messages
 - **Native crypto** — SHA-256, Keccak-256, secp256k1 ECDSA, EVM address derivation
 
-CPS uses a **3-tier acceleration model**: Rust native (.node) → WASM → TypeScript fallback. In Agent Zero's Docker environment, **WASM (Tier 2)** is active.
+A0P-S uses a **3-tier acceleration model**: Rust native (.node) → WASM → TypeScript fallback. In Agent Zero's Docker environment, **WASM (Tier 2)** is active.
 
 ---
 
 ## Quick Start
 
 ```bash
-# 1. Build CPS and create runtime directories
+# 1. Build A0P-S and create runtime directories
 bash /a0/usr/projects/adapt_clawpowers-skills_to_a0/scripts/install.sh
 
 # 2. (Optional) Start ITP compression service
@@ -194,7 +194,7 @@ bash scripts/install-tier1.sh
 **What it does:**
 1. Installs Rust toolchain to `/a0/usr/.rust/` *(persists across container restarts)*
 2. Compiles the `clawpowers-ffi` napi-rs crate (~5–10 min first build)
-3. Places `index.node` where CPS loader auto-discovers it
+3. Places `index.node` where A0P-S loader auto-discovers it
 4. Verifies `getActiveTier()` returns `'native'`
 
 **Options:**
@@ -292,10 +292,10 @@ This adapter layer (files in this directory, excluding the `clawpowers-skills-re
 
 ---
 
-## CPS Version
+## A0P-S Version
 
-- **CPS Version:** 2.2.6
-- **CPS Path:** `/a0/usr/projects/adapt_clawpowers-skills_to_a0/clawpowers-skills-repo/`
+- **A0P-S Version:** 2.2.6
+- **A0P-S Path:** `/a0/usr/projects/adapt_clawpowers-skills_to_a0/clawpowers-skills-repo/`
 - **Built dist:** `dist/index.js` (107KB ESM) + `dist/index.d.ts` (50KB)
 - **WASM:** `native/wasm/pkg-node/clawpowers_wasm.js` (487KB)
 - **Node requirement:** ≥20 (running: v22.22.0)

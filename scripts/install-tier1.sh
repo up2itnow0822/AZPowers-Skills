@@ -22,7 +22,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
-CPS_REPO="$PROJECT_DIR/clawpowers-skills-repo"
+A0PS_REPO="$PROJECT_DIR/clawpowers-skills-repo"
 
 # ── Persistent Rust installation inside the A0 volume ─────────────────────────
 # /a0/usr/ is mounted as a Docker volume — Rust installed here survives restarts.
@@ -39,8 +39,8 @@ error()   { echo -e "${RED}[tier1]${NC} $*"; }
 
 # ── --verify shortcut ──────────────────────────────────────────────────────────
 if [[ "${1:-}" == "--verify" ]]; then
-  info "Checking active CPS tier..."
-  if command -v node >/dev/null 2>&1 && [[ -f "$CPS_REPO/dist/index.js" ]]; then
+  info "Checking active A0P-S tier..."
+  if command -v node >/dev/null 2>&1 && [[ -f "$A0PS_REPO/dist/index.js" ]]; then
     node --input-type=module <<'JSEOF'
 import { getActiveTier, isNativeAvailable, isWasmAvailable, getCapabilitySummary } from '/a0/usr/projects/adapt_clawpowers-skills_to_a0/clawpowers-skills-repo/dist/index.js';
 console.log('Active tier :', getActiveTier());
@@ -49,7 +49,7 @@ console.log('WASM         :', isWasmAvailable());
 console.log('Summary      :', JSON.stringify(getCapabilitySummary(), null, 2));
 JSEOF
   else
-    warn "CPS dist not found — run install.sh first"
+    warn "A0P-S dist not found — run install.sh first"
   fi
   exit 0
 fi
@@ -97,18 +97,18 @@ if [[ "${1:-}" != "--build-only" ]]; then
   install_rust
 fi
 
-# ── Step 2: Ensure CPS repo is present ────────────────────────────────────────
-if [[ ! -d "$CPS_REPO/native/ffi" ]]; then
-  error "CPS repo not found at $CPS_REPO"
-  error "Run scripts/install.sh first to set up the CPS repository"
+# ── Step 2: Ensure A0P-S repo is present ────────────────────────────────────────
+if [[ ! -d "$A0PS_REPO/native/ffi" ]]; then
+  error "A0P-S repo not found at $A0PS_REPO"
+  error "Run scripts/install.sh first to set up the A0P-S repository"
   exit 1
 fi
 
 # ── Step 3: Build the .node addon ─────────────────────────────────────────────
 info "Building Tier 1 native .node addon..."
-info "  Source: $CPS_REPO/native/ffi"
+info "  Source: $A0PS_REPO/native/ffi"
 
-cd "$CPS_REPO"
+cd "$A0PS_REPO"
 
 # Install build dependencies for napi-rs
 info "Installing build dependencies..."
@@ -116,23 +116,23 @@ apt-get install -y --no-install-recommends   build-essential pkg-config libssl-d
 
 # Build the full native workspace
 info "Running cargo build --release (this takes 3–10 minutes on first build)..."
-cd "$CPS_REPO/native"
+cd "$A0PS_REPO/native"
 cargo build --release --workspace 2>&1 |   grep -E 'Compiling|Finished|error|warning.*unused' |   tail -20 || {
     error "Cargo build failed"
     exit 1
   }
 
-# ── Step 4: Copy .node to where CPS loader expects it ─────────────────────────
+# ── Step 4: Copy .node to where A0P-S loader expects it ─────────────────────────
 # napi-rs cdylib output is libclawpowers_ffi.so on Linux
-FFI_SO="$CPS_REPO/native/target/release/libclawpowers_ffi.so"
-FFI_NODE_DEST="$CPS_REPO/native/ffi/index.node"
+FFI_SO="$A0PS_REPO/native/target/release/libclawpowers_ffi.so"
+FFI_NODE_DEST="$A0PS_REPO/native/ffi/index.node"
 
 if [[ -f "$FFI_SO" ]]; then
   cp "$FFI_SO" "$FFI_NODE_DEST"
   info "Copied: $FFI_SO → $FFI_NODE_DEST"
 else
   # napi-rs may also output directly as .node
-  NAPI_NODE="$CPS_REPO/native/target/release/clawpowers_ffi.node"
+  NAPI_NODE="$A0PS_REPO/native/target/release/clawpowers_ffi.node"
   if [[ -f "$NAPI_NODE" ]]; then
     cp "$NAPI_NODE" "$FFI_NODE_DEST"
     info "Copied: $NAPI_NODE → $FFI_NODE_DEST"
@@ -140,7 +140,7 @@ else
     error "Build output not found — expected one of:"
     error "  $FFI_SO"
     error "  $NAPI_NODE"
-    ls "$CPS_REPO/native/target/release/" | grep -E '\.so|\.node' | head -10 || true
+    ls "$A0PS_REPO/native/target/release/" | grep -E '\.so|\.node' | head -10 || true
     exit 1
   fi
 fi

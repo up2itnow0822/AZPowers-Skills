@@ -14,7 +14,7 @@ The Identical Twins Protocol (ITP) compresses agent-to-agent messages using a co
 **ITP Service:** FastAPI on port 8100. Skills work without it (graceful degradation).
 
 ```javascript
-const CPS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
+const A0PS = 'file:///a0/usr/projects/adapt_azpowers-skills_to_a0/azpowers-skills-repo/dist/index.js';
 ```
 
 ---
