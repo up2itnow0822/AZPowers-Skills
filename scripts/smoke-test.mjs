@@ -200,7 +200,6 @@ results.forEach(r => {
 });
 
 const passed = results.filter(r => r.status === 'PASS').length;
-const failed = results.filter(r => r.status === 'FAIL').length;
 console.log(`\n${passed}/${results.length} modules passed`);
 
 if (!allPass) {
