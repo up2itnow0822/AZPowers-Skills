@@ -163,6 +163,12 @@ Encoded format: `ITP:<code1>+<code2>+...` (only when savings > 10%)
 
 ---
 
+## Prompt Injection
+
+AZPowers-Skills injects Agent Zero system-prompt additions via `extensions/python/agent_system_prompt/end/10_azpowers.py`. This applies to every agent. The plugin has `per_agent_config: false` so this is global. To disable entirely, toggle the plugin off via the Plugin Hub.
+
+---
+
 ## Tier Architecture
 
 A0P-S automatically selects the best available cryptographic acceleration tier at runtime:

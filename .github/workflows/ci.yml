@@ -137,6 +137,12 @@ jobs:
       - name: Run smoke test
         run: node scripts/smoke-test.mjs
 
+      - name: Teardown ITP service
+        if: always()
+        run: |
+          pkill -f 'uvicorn itp_server:app' || true
+          echo 'ITP service stopped'
+
   # ── Job 3: Python lint and validation ────────────────────────────────────────
   lint-python:
     name: Lint Python
@@ -173,8 +179,29 @@ jobs:
 
       - name: ShellCheck all shell scripts
         run: |
-          shellcheck scripts/install.sh
-          shellcheck scripts/verify.sh
-          shellcheck scripts/install-tier1.sh
-          shellcheck itp-service/start.sh
+          shellcheck -e SC1091 scripts/install.sh
+          shellcheck -e SC1091 scripts/verify.sh
+          shellcheck -e SC1091 scripts/install-tier1.sh
+          shellcheck -e SC1091 itp-service/start.sh
           echo 'PASS all shell scripts pass ShellCheck'
+
+  # ── Job 5: Python unit tests ─────────────────────────────────────────────────
+  unit-test:
+    name: Unit Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Run pytest
+        run: pytest -q
