@@ -52,8 +52,17 @@ def _deploy_skill(skill_dir: Path, dest: Path) -> None:
     print(f"[AZPowers] Installed skill: {skill_dir.name}")
 
 
-def install(plugin_dir: str, data_dir: str) -> None:
-    """Install AZPowers-Skills: deploy skill directories and runtime deps."""
+def install(plugin_dir: str | None = None, data_dir: str | None = None, **_kwargs) -> None:
+    """Install AZPowers-Skills: deploy skill directories and runtime deps.
+
+    Accepts the 2 positional args the framework *used* to pass, but also
+    works when the framework calls us with no args or unexpected kwargs:
+    we self-discover plugin_dir from __file__. Any extra kwargs are ignored.
+    """
+    if plugin_dir is None:
+        plugin_dir = str(Path(__file__).parent)
+    if data_dir is None:
+        data_dir = str(Path.home() / ".agent-zero" / "plugins" / "azpowers_skills")
     plugin_path = Path(plugin_dir)
     # Skills live at usr/skills/ — two levels up from usr/plugins/azpowers_skills/
     skills_target = plugin_path.parent.parent / "skills"
@@ -130,8 +139,14 @@ def install(plugin_dir: str, data_dir: str) -> None:
     print("[AZPowers] Installation complete.")
 
 
-def uninstall(plugin_dir: str, data_dir: str) -> None:
-    """Uninstall AZPowers-Skills: remove ONLY directories marked as deployed by AZPowers."""
+def uninstall(plugin_dir: str | None = None, data_dir: str | None = None, **_kwargs) -> None:
+    """Uninstall AZPowers-Skills: remove ONLY directories marked as deployed by AZPowers.
+
+    Accepts optional plugin_dir / data_dir, self-discovers from __file__ when omitted,
+    and absorbs any extra kwargs from the framework.
+    """
+    if plugin_dir is None:
+        plugin_dir = str(Path(__file__).parent)
     skills_target = Path(plugin_dir).parent.parent / "skills"
     if not skills_target.is_dir():
         print("[AZPowers] No skills directory found — nothing to remove")
@@ -161,7 +176,10 @@ def uninstall(plugin_dir: str, data_dir: str) -> None:
     print("[AZPowers] Uninstall complete.")
 
 
-def pre_update(plugin_dir: str, data_dir: str) -> None:
-    """Called before plugin update. Runs uninstall to clean staging."""
+def pre_update(plugin_dir: str | None = None, data_dir: str | None = None, **_kwargs) -> None:
+    """Called before plugin update. Runs uninstall to clean staging.
+
+    Accepts optional args like install/uninstall for framework-agnostic calling.
+    """
     print("[AZPowers] pre_update: cleaning up deployed skills before upgrade")
-    uninstall(plugin_dir, data_dir)
+    uninstall(plugin_dir=plugin_dir, data_dir=data_dir)
