@@ -180,4 +180,4 @@ def pre_update(plugin_dir: str | None = None, data_dir: str | None = None, **_kw
     Accepts optional args like install/uninstall for framework-agnostic calling.
     """
     print("[AZPowers] pre_update: cleaning up deployed skills before upgrade")
-    uninstall(plugin_dir=plugin_dir, data_dir=data_dir)
+    uninstall(plugin_dir, data_dir)
