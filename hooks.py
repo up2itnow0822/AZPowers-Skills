@@ -52,7 +52,7 @@ def _deploy_skill(skill_dir: Path, dest: Path) -> None:
     print(f"[AZPowers] Installed skill: {skill_dir.name}")
 
 
-def install(plugin_dir: str | None = None, data_dir: str | None = None, **_kwargs) -> None:
+def install(plugin_dir: str | None = None, unused_data_dir: str | None = None, **_kwargs) -> None:
     """Install AZPowers-Skills: deploy skill directories and runtime deps.
 
     Accepts the 2 positional args the framework *used* to pass, but also
@@ -61,8 +61,6 @@ def install(plugin_dir: str | None = None, data_dir: str | None = None, **_kwarg
     """
     if plugin_dir is None:
         plugin_dir = str(Path(__file__).parent)
-    if data_dir is None:
-        data_dir = str(Path.home() / ".agent-zero" / "plugins" / "azpowers_skills")
     plugin_path = Path(plugin_dir)
     # Skills live at usr/skills/ — two levels up from usr/plugins/azpowers_skills/
     skills_target = plugin_path.parent.parent / "skills"
