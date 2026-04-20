@@ -1,0 +1,20 @@
+title = "AZPowers-Skills gitleaks configuration"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Ignore public Hardhat sample private key in azpowers-wallet docs"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''^a0-skills/azpowers-wallet/SKILL\.md$''']
+regexTarget = "match"
+regexes = ['''(?i)ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80''']
+
+[[allowlists]]
+description = "Ignore public Hardhat sample private key in azpowers-native docs"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''^a0-skills/azpowers-native/SKILL\.md$''']
+regexTarget = "match"
+regexes = ['''(?i)ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80''']
