@@ -1,3 +1,6 @@
+[extend]
+useDefault = true
+
 [allowlist]
 description = "Allow known Hardhat default key examples in skill documentation"
 condition = "AND"
